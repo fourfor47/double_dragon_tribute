@@ -26,11 +26,16 @@ jobs:
         run: |
           mkdir -p ~/.local/bin
           GODOT_VERSION="4.2.2-stable"
-          # Use ghproxy mirror for reliable downloads
-          GODOT_URL="https://ghproxy.com/https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          # Use official Godot CDN (fast and reliable)
+          GODOT_URL="https://godotengine.org/d/4.2.2-stable/Godot_v4.2.2-stable_linux.x86_64.zip"
           if ! command -v godot &> /dev/null; then
-            echo "Downloading Godot ${GODOT_VERSION} from ghproxy..."
+            echo "Downloading Godot ${GODOT_VERSION} from official CDN..."
             curl -fL --retry 3 --retry-delay 5 "$GODOT_URL" -o godot.zip
+            # Check if we got a valid zip
+            if ! unzip -t godot.zip >/dev/null 2>&1; then
+              echo "Primary download failed, trying GitHub Releases direct..."
+              curl -fL --retry 3 --retry-delay 5 "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" -o godot.zip
+            fi
             unzip -q godot.zip
             chmod +x Godot_v${GODOT_VERSION}_linux.x86_64
             mv Godot_v${GODOT_VERSION}_linux.x86_64 ~/.local/bin/godot
