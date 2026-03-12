@@ -19,7 +19,7 @@ jobs:
         path: |
           ~/.local/share/godot/
           ~/.config/godot/
-        ~/.local/bin/godot
+          ~/.local/bin/godot
         key: ${{ runner.os }}-godot-4.2
 
     - name: Install Godot
